@@ -1,6 +1,0 @@
-name = External Links Filter
-description = Adds an icon to external and mailto links.
-config = admin/config/content/elf
-core = 7.x
-files[] = elf.install
-files[] = elf.module

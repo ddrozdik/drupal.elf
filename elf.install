@@ -2,32 +2,33 @@
 
 /**
  * @file
- *   Installation and uninstallation functions.
+ * Contains update functions for Elf module.
  */
 
 /**
- * Implement hook_uninstall().
- */
-function elf_uninstall() {
-  db_query("DELETE FROM {variable} WHERE name LIKE 'elf_%%'");
-  cache_clear_all('variables', 'cache');
-}
-
-/**
- * Implement hook_requirements().
+ * Implements hook_requirements().
  */
 function elf_requirements($phase) {
-  $requirements = array();
+  $requirements = [];
 
   $loaded = extension_loaded('DOM');
-  $requirements["elf_extension_dom"] = array(
-    'title' => 'DOM',
-    'value' => $loaded ? t('Loaded') : t('Not loaded'),
-    'severity' => $loaded ? REQUIREMENT_OK : REQUIREMENT_ERROR,
-    'description' => $loaded ? NULL : t('External Links Filter requires PHP\'s <a href="!url">Document Object Model</a>.', array(
-      '!url' => 'http://php.net/manual/en/book.dom.php',
-    )),
-  );
+  if ($loaded) {
+    $requirements["elf_extension_dom"] = [
+      'title' => 'DOM',
+      'value' => t('DOM extension is loaded'),
+      'severity' => REQUIREMENT_OK,
+    ];
+  }
+  else {
+    $requirements["elf_extension_dom"] = [
+      'title' => 'DOM',
+      'value' => t('DOM extension is not loaded'),
+      'severity' => REQUIREMENT_ERROR,
+      'description' => t('External Links Filter requires PHP\'s <a href="!url">Document Object Model</a>.', [
+        '!url' => 'http://php.net/manual/en/book.dom.php',
+      ]),
+    ];
+  }
 
   return $requirements;
 }
